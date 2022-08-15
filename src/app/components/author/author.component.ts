@@ -1,5 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Author } from 'src/app/author';
+import { DeactivateAuthor } from 'src/app/Interfaces/deactivate-author.model';
 import { DataService } from 'src/app/service/data.service';
 
 @Component({
@@ -8,25 +9,45 @@ import { DataService } from 'src/app/service/data.service';
   styleUrls: ['./author.component.css']
 })
 export class AuthorComponent implements OnInit {
-  [x: string]: any;
 
   authors: any = [];
-  author = new Author();
-
+  authorEmail!: DeactivateAuthor;
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.getAuthorsData();
   }
+  changeStatus(email: any) {
+    console.log(email);
+    this.authorEmail = {
+      email: email,
+    }
+    this.dataService.changestatus(this.authorEmail).subscribe({
+      next: (res) => {
+        //alert("Author deactivated successfully");
+        this.getAuthorsData();
+      },
+      error: (err) => {
+        console.log(err);
+        alert("Error while de-activating the author");
+      }
 
-  getAuthorsData() {
-    // console.log('Hello Authors');
-    this.dataService.getAllAuthors().subscribe(res => {
-       console.log(res);
-      let resData: any = res;
-      this.authors = resData.authors;
     });
   }
+  getAuthorsData() {
 
+    this.dataService.getAllAuthors().subscribe(
+      data => this.handleResponse(data),
+      error => this.handleError(error)
+    );
+  }
 
+  handleResponse(data: any) {
+    console.log(data);
+    this.authors = data;
+  }
+
+  handleError(error: any): void {
+    console.log(error.error.message);
+  }
 }

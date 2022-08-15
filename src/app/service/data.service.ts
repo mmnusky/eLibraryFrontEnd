@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -6,40 +7,65 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DataService {
   private baseUrl = 'https://localhost:7216/api/v1';
+  private listStatus = new BehaviorSubject<any>('');
+  listStatusObserver = this.listStatus.asObservable();
+
+  private adminRole = new BehaviorSubject<any>('');
+  adminRoleObservable = this.adminRole.asObservable();
+
+  private addBook = new BehaviorSubject<any>('');
+  addBookObservable = this.addBook.asObservable();
+
   constructor(private httpClient: HttpClient) { }
 
-  getData() {
-    return this.httpClient.get(`${this.baseUrl}/GetBookDetails`);
+  getAllBook() {
+    return this.httpClient.get(`${this.baseUrl}/BookDetails/GetBookDetails`);
   }
-
-  insertData(data: any) {
-    return this.httpClient.post(`${this.baseUrl}/InsertBookDetails`, data)
+  uploadImage(data: any) {
+    return this.httpClient.post(`${this.baseUrl}/BookDetails/InserBookDetails`, data, { reportProgress: true, observe: 'events' })
+  }
+  insertBookData(data: any) {
+    return this.httpClient.post(`${this.baseUrl}/BookDetails/InserBookDetails`, data, { headers: this.setHeaders() })
   }
 
   signup(data: any) {
-    return this.httpClient.post(`${this.baseUrl}/Register`, data)
+    return this.httpClient.post(`${this.baseUrl}/Account/Register`, data)
   }
 
   login(data: any) {
-    return this.httpClient.post(`${this.baseUrl}/Login`, data)
+    return this.httpClient.post(`${this.baseUrl}/Account/Login`, data)
   }
 
   logout(data: any) {
-    return this.httpClient.post(`${this.baseUrl}/LogOut`, data)
+    return this.httpClient.post(`${this.baseUrl}/Account/LogOut`, data)
   }
-
-  getAuthorsBook() {
-    return this.httpClient.get(`${this.baseUrl}/book?limit=10&page=1`)
-  }
-
   getAllAuthors() {
-    return this.httpClient.get(`${this.baseUrl}/authors`)
+    return this.httpClient.get(`${this.baseUrl}/Role/GetAllAuthor`, { headers: this.setHeaders() })
+  }
+  deletebook(id: any) {
+    return this.httpClient.get(`${this.baseUrl}/BookDetails/DeleteBookDetails/` + id)///" + id
   }
 
   changestatus(data: any) {
-    return this.httpClient.get(`${this.baseUrl}/DeactivateAuthor`, data)
+    return this.httpClient.post(`${this.baseUrl}/Role/DeactivateAuthor`, data, { headers: this.setHeaders() })
   }
+  getAllActiveAuthor() {
+    return this.httpClient.get(`${this.baseUrl}/Role/GetAllActiveAuthor`, { headers: this.setHeaders() })
+  }
+  //observable
+  statusUpdate(data: any) {
 
+    this.listStatus.next(data);
+
+  }
+  roleCheck(data: any) {
+
+    this.adminRole.next(data);
+
+  }
+  roleOrAdminCheck(data: any) {
+    this.addBook.next(data);
+  }
   handle(token: any) {
     this.set(token);
   }
@@ -47,25 +73,18 @@ export class DataService {
   set(token: any) {
     localStorage.setItem('token', token);
   }
-  get() {
+  getToken() {
     return localStorage.getItem('token');
   }
-
   remove() {
     localStorage.removeItem('token');
   }
+  setHeaders() {
+    let headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getToken()}`
+    }
 
-
-  payload(token: any) {
-    const payload = token.split('.')[1];
-    return this.decode(payload);
+    return headers;
   }
-
-  decode(payload: any) {
-    return JSON.parse(atob(payload));
-  }
-
-
-
-
 }

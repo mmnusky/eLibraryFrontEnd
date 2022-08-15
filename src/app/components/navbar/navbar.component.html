@@ -14,23 +14,36 @@
                     <a class="nav-link" [routerLink]="['/author']" routerLinkActive="router-link-active" >Authors</a>
                 </li> -->
             </ul>
-            <ul class="navbar-nav">
-                <li>
-                    <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
-                    <a class="nav-link" [routerLink]="['/logout']" routerLinkActive="router-link-active"
-                        **ngIf="loggedIn">Logout</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
+
+            <ul class="navbar-nav" *ngIf="!loggedIn">
                 <li>
                     <a class="nav-link" [routerLink]="['/signup']" routerLinkActive="router-link-active">Signup</a>
                 </li>
             </ul>
-            <!-- <ul class="navbar-nav">
+            <ul class="navbar-nav" *ngIf="loggedIn">
                 <li>
-                    <a class="nav-link" [routerLink]="['/profile']" routerLinkActive="router-link-active">Profile</a>
+                    <a class="nav-link" [routerLink]="['/allbooks']" routerLinkActive="router-link-active">Home</a>
                 </li>
-            </ul> -->
+            </ul>
+            <ul class="navbar-nav" *ngIf="loggedIn && isAllowToAddBook">
+                <li>
+                    <a class="nav-link" [routerLink]="['/books']" routerLinkActive="router-link-active">Add Book</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav" *ngIf="loggedIn && isAdmin">
+                <li>
+                    <a class="nav-link" [routerLink]="['/allauthors']" routerLinkActive="router-link-active">All
+                        Author</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li>
+                    <a class="nav-link" [routerLink]="['/login']" *ngIf="!loggedIn"
+                        routerLinkActive="router-link-active">Login</a>
+                    <a class="nav-link" [routerLink]="['/logout']" routerLinkActive="router-link-active"
+                        *ngIf="loggedIn">Logout</a>
+                </li>
+            </ul>
 
         </div>
     </div>

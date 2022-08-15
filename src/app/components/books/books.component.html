@@ -1,33 +1,56 @@
+<article class="container">
+    <section class="create" *ngIf="isCreate">
+        <h1>Add Book Details</h1>
+        <form>
+            <div class="mb-3">
+                <label for="bname">Book Name</label>
+                <input type="text" class="form-control" id="bname" name="bname" placeholder="Enter your book name"
+                    [(ngModel)]="bookname">
+            </div>
+            <!-- <div class="mb-3">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address"
+                    [(ngModel)]="authorname">
+            </div> -->
+            <div class="mb-3">
+                <label for="status" class="form-label">Author name</label>
+                <select class="form-control" name="status" id="status" [(ngModel)]="authorname">
+                    <option *ngFor="let authorname of authorsList" [value]="authorname.firstName">
+                        {{authorname.firstName}}
+                    </option>
+                </select>
+            </div>
+            <app-image-upload (onUploadFinished)="uploadFinished($event)"></app-image-upload>
+            <div class="row">
+                <div class="offset-md-5 col-md-2">
+                    <button type="button" class="btn btn-primary" (click)="onCreate()">Create </button>
+                </div>
+            </div>
+        </form>
+    </section>
 
-<form (ngSubmit)="insertData()">
-    <div class="form-group">
-        <label for="book_tittle">Book Tittle</label>
-        <input type="text" name="book_tittle" class="form-control" [(ngModel)]="book.book_tittle">
-    </div>
-    <div class="form-group">
-        <label for="book_detail">Book Detail</label>
-        <input type="text" name="book_tittle" class="form-control" [(ngModel)]="book.book_detail">
-    </div>
-    <!-- <div class="form-group">
-        <label for="book_image">Book Image</label>
-        <input type="file" name="book_image" class="form-control" [(ngModel)]="book.book_image">
-    </div> -->
-    <button class="btn btn-dark btn-sm mt-2 mb-4">Submit</button>
-</form>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tittle</th>
-            <th scope="col">Detail</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of books">
-            <th scope="row">{{item.id}}</th>
-            <td>{{item.book_tittle}}</td>
-            <td>{{item.book_detail}}</td>
-        </tr>
-    </tbody>
-</table>
+    <section class="users" *ngIf="!isCreate">
+        <!-- <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Cover Page</th>
+                    <th scope="col">Book Tittle</th>
+                    <th scope="col">Author Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let book of books">
+                    <td><img [src]="createImgPath(book.imgPath)" alt="Cover Page" style="width:60px; height:60px;">
+                    </td>
+                    <td>{{book.bookname}}</td>
+                    <td>{{book.authorname}}</td>
+                </tr>
+            </tbody>
+        </table> -->
+        <div class="row">
+            <div class="offset-md-10 col-md-2">
+                <button type="button" class="btn btn-primary" (click)="returnToCreate()">New User</button>
+            </div>
+        </div>
+    </section>
+</article>

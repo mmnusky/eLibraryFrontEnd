@@ -26,19 +26,26 @@ export class LoginComponent implements OnInit {
       data => this.handleResponse(data),
       error => this.handleError(error)
     );
-  }
 
-  handleResponse(data:any) {
-    this.dataService.handle(data.access_token);
-    if (data.user.role_id == 1) {
-      this.router.navigateByUrl('/author');
-    } else {
-      this.router.navigateByUrl('/books');
+  };
+
+  handleResponse(data: any) {
+    console.log(data);
+    if (data.role == "Admin") {
+      this.dataService.roleCheck(true);
+    }//roleOrAdminCheck
+    if (data.role == "Admin" || data.role == "Author") {
+      this.dataService.roleOrAdminCheck(true);
     }
+    localStorage.setItem('userRole', data.role);
+    this.dataService.handle(data.token);
+    this.dataService.statusUpdate(true);
+    this.router.navigateByUrl('/allbooks');
   }
 
-  handleError(error:any) {
-    this.error = error.error.error;
+  handleError(error: any) {
+    console.log(error);
+    this.error = error.error.message;
   }
   ngOnInit() {
   }
